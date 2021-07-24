@@ -56,8 +56,11 @@ namespace DataAccess.Repository
 
             try
             {
-                registrasi.NoRegistrasi = GetNoRegistrasi(data);
-                registrasi.Jadwal = data.Jadwal;
+                if(registrasi.Jadwal.Date != data.Jadwal.Date)
+                {
+                    registrasi.NoRegistrasi = GetNoRegistrasi(data);
+                    registrasi.Jadwal = data.Jadwal;
+                }
                 registrasi.IdPasien = data.IdPasien;
                 registrasi.IdDokter = data.IdDokter;
                 _dbContext.Registrasi.Update(registrasi);
@@ -95,7 +98,7 @@ namespace DataAccess.Repository
         {
             var xx = _dbContext.Registrasi
                         .OrderByDescending(x => x.NoRegistrasi)
-                        .FirstOrDefault(x => x.Jadwal == data.Jadwal);
+                        .FirstOrDefault(x => x.Jadwal.Date == data.Jadwal.Date);
 
             string jd = data.Jadwal.ToString("yyyyMMdd");
             int noRegistrasiTerakhirPerTanggal = xx == null ? 1 : Convert.ToInt32(xx.NoRegistrasi.Substring(8,3)) + 1;
